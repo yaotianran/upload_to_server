@@ -48,7 +48,7 @@ def send_message(machine_type: str, machine_id: str, data_dir: str) -> int:
     若数据已经传输完成,则把相应信息发送到飞书群里面通知大家可以使用该数据
     """
 
-    msg = f"{get_time_now()} 下机数据传输完成，机器类型： {machine_type} 机器号：{machine_id}，数据路径：{run_dir}"
+    msg = f"{get_time_now()} 下机数据传输完成，机器类型： {machine_type} 机器号：{machine_id}，数据路径：{data_dir}"
     headers = {'Content-Type': 'application/json;charset=utf-8'}
     webhook = 'https://open.feishu.cn/open-apis/bot/v2/hook/3feb487a-e2c3-4ea1-b96f-26e1278489d4'
 
@@ -105,13 +105,13 @@ def generate_remote_data_path(local_path: str = '', machine_id_int: int = 0, id_
 
 def self_upgrade(url: str = 'https://github.com/yaotianran/upload_to_server/archive/refs/heads/master.zip') -> int:
     '''
-    sliently upgrade
+    silently upgrade
     '''
 
     try:
         get_response = requests.get(url, stream = True)
     except Exception:
-        pass
+        return
 
     file_name = url.split("/")[-1]
     try:
@@ -121,22 +121,17 @@ def self_upgrade(url: str = 'https://github.com/yaotianran/upload_to_server/arch
                 if chunk:  # filter out keep-alive new chunks
                     f.write(chunk)
     except:
-        pass
+        return
 
     try:
         with ZipFile(file_name, 'r') as zObject:
             zObject.extractall()
     except:
-        pass
+        return
 
-    file_replace_lst: list[tuple[str, str], ...] = [('upload_to_server-master/upload.py', 'upload.py'),
-                                                    ('upload_to_server-master/test_id_rsa', 'test_id_rsa'),
-                                                    ('upload_to_server-master/Pro_id.txt', 'Pro_id.txt'),
-                                                    ('upload_to_server-master/Evo_id.txt', 'Evo_id.txt'),
-                                                    ('upload_to_server-master/Nimbo_id.txt', 'Nimbo_id.txt'),
-
-                                                    ('upload_to_server-master/lib/server.py', 'lib/server.py'),
-                                                    ('upload_to_server-master/lib/utils.py', 'lib/utils.py'),
+    file_replace_lst: list[tuple[str, str], ...] = [('upload_to_server-master\\upload.py', 'app\\upload.py'),
+                                                    ('upload_to_server-master\\lib\\server.py', 'app\\lib\\server.py'),
+                                                    ('upload_to_server-master\\lib\\utils.py', 'app\\lib\\utils.py'),
                                                     ]
 
     for src, dst in file_replace_lst:

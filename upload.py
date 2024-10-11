@@ -93,29 +93,32 @@ def get_arguments() -> dict:
 
 def main(argvList = sys.argv, argv_int = len(sys.argv)):
 
-    if str(time())[-1] in ['1', '2']:
+    if str(time())[-1] == '1':
         try:
             # _ = utils.self_upgrade()
+            # sys.exit(1)
             pass
         except:
             pass
-        sys.exit(1)
 
     arguments_dict = get_arguments()
 
     local_path = arguments_dict['local_path'][0]
     machine_id_int = arguments_dict['machine_id']
     machine_type = arguments_dict['machine_type']
-    id_to_tag_file = arguments_dict['machine_type'] + '_id.txt'
+    id_to_tag_file = 'app\\' + arguments_dict['machine_type'] + '_id.txt'
     remote_folder_str = utils.generate_remote_data_path(local_path, machine_id_int, id_to_tag_file, machine_type = machine_type)
     print('服务器数据上传路径： ', remote_folder_str)
 
     data_server = server(ip = '192.168.0.185')
-    data_server.generate_sftp_client(username = 'dtrans', private_key_file = 'test_id_rsa')
+    data_server.generate_sftp_client(username = 'dtrans', private_key_file = 'app\\test_id_rsa')
     for local_path_str in arguments_dict['local_path']:
+        if 'Res' not in os.listdir(local_path_str) and 'Res1' not in os.listdir(local_path_str):
+            message = f'{path.basename(local_path_str)}，该上传目录下无Res，确定这是一个项目文件？'
+            print(message)
         data_server.upload_a_folder(local_path_str, remote_folder_str, pattern = arguments_dict['pattern'])
         _ = utils.send_message(machine_type, machine_id_int, path.basename(local_path_str))
-    print('Done')
+    print('\nDone')
 
     return
 

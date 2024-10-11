@@ -126,7 +126,8 @@ class server:
             raise FileNotFoundError(message)
 
         time_str = utils.get_time_now()
-        print(f'{time_str} {local_file} ---> {remote_file}')
+        print()
+        print(f'\n{time_str}\n{local_file}\n--->\n{remote_file}')
 
         try:
             local_file_stat = os.stat(local_file)
@@ -146,7 +147,7 @@ class server:
 
     def upload_a_folder(self, local_folder: str, remote_folder: str, pattern: list[str, ...] = ['.fastq.gz', '.fq.gz', '.fq', '.fastq', '.md5']) -> int:
         '''
-        将local folder上传到服务器的remote folder下 ，保持目录结构，可选择只上传某些类型的文件
+        将local folder上传到服务器的remote folder下，成为remote folder下的一个子目录 ，保持每个子目录下保持原始目录结构，可选择只上传某些类型的文件
         '''
 
         # local_folder = r'D:\Program Files'
@@ -156,11 +157,11 @@ class server:
         for root_dir_str, child_folder_lst, files_lst in os.walk(local_folder):
             relative_remote_folder_str = root_dir_str[len(parent_folder_of_local):]
             relative_remote_folder_str = relative_remote_folder_str.replace('\\', '/')
-            print(root_dir_str, '||', parent_folder_of_local, '||', relative_remote_folder_str)
+            # print(root_dir_str, '||', parent_folder_of_local, '||', relative_remote_folder_str)
 
             # 建立folder
             r = self.create_remote_folder(remote_folder, relative_remote_folder_str, dummy_mode = False)
-            print(f'create {r}')
+            # print(f'create {r}')
 
             # 　ｃｏｐｙ　ｆｉｌｅ
             for s in pattern:
@@ -169,7 +170,7 @@ class server:
                 for file_name_str in local_files_lst:
                     file_base_name_str = path.basename(file_name_str)
                     remote_file_name = f'{remote_folder}/{relative_remote_folder_str}/{file_base_name_str}'
-                    print(file_name_str, '--->', remote_file_name)
+                    # print(file_name_str, '--->', remote_file_name)
                     _ = self.upload_a_file(file_name_str, remote_file_name)
 
         return
