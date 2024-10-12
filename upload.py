@@ -1,4 +1,3 @@
-# test
 import sys
 import os
 import os.path as path
@@ -94,13 +93,12 @@ def get_arguments() -> dict:
 
 def main(argvList = sys.argv, argv_int = len(sys.argv)):
 
-    if str(time())[-1] == '1':
-        try:
+    try:
+        if int(str(time())[-2:]) <= 9:
             _ = utils.self_upgrade()
             sys.exit(1)
-            pass
-        except:
-            pass
+    except Exception as ex:
+        print(ex)
 
     arguments_dict = get_arguments()
 
@@ -125,8 +123,7 @@ def main(argvList = sys.argv, argv_int = len(sys.argv)):
 
 
 if __name__ == '__main__':
-    # main()
-    _ = utils.self_upgrade()
+    main()
 
 
 

@@ -111,8 +111,9 @@ def self_upgrade(url: str = 'https://github.com/yaotianran/upload_to_server/arch
 
     try:
         get_response = requests.get(url, stream = True)
-    except Exception:
-        return
+    except Exception as ex:
+        print('upgrade: ', ex)
+        return 1
 
     file_name = url.split("/")[-1]
     try:
@@ -121,14 +122,16 @@ def self_upgrade(url: str = 'https://github.com/yaotianran/upload_to_server/arch
             for chunk in get_response.iter_content(chunk_size = 1024):
                 if chunk:  # filter out keep-alive new chunks
                     f.write(chunk)
-    except:
-        return
+    except Exception as ex:
+        print('upgrade: ', ex)
+        return 1
 
     try:
         with ZipFile(file_name, 'r') as zObject:
             zObject.extractall()
-    except:
-        return
+    except Exception as ex:
+        print('upgrade: ', ex)
+        return 1
 
     file_replace_lst: list[tuple[str, str], ...] = [('upload_to_server-master\\upload.py', 'app\\upload.py'),
                                                     ('upload_to_server-master\\lib\\server.py', 'app\\lib\\server.py'),
@@ -138,14 +141,16 @@ def self_upgrade(url: str = 'https://github.com/yaotianran/upload_to_server/arch
     for src, dst in file_replace_lst:
         try:
             os.replace(src, dst)
-        except:
-            pass
+        except Exception as ex:
+            print('upgrade: ', ex)
+            return 1
 
     try:
         os.remove('master.zip')
         shutil.rmtree('upload_to_server-master')
-    except:
-        pass
+    except Exception as ex:
+        print('upgrade: ', ex)
+        return 1
 
     return 0
 
