@@ -83,15 +83,25 @@ def generate_remote_data_path(local_path: str = '', machine_id_int: int = 0, id_
                 print('generate_remote_data_path： 目前machine id仅支持数字和下划线', line_lst[0], '不是数字')
                 continue
 
-    machine_id_from_path_int = int(re.findall(f'(?<={machine_type})\\d+', local_path)[0])
-    if machine_id_int != 0:
+    try:
+        machine_id_from_path_int = int(re.findall(f'(?<={machine_type})\\d+', local_path)[0])
+    except IndexError:
+        machine_id_from_path_int = 0
+
+    if machine_id_int != 0 and machine_id_from_path_int != 0:
         if machine_id_int != machine_id_from_path_int:
             message = f'generate_remote_data_path:警告 本地数据路径{local_path} 中的 machine_id: {machine_id_from_path_int} 与提供的machine_id： {machine_id_int}不符'
             warnings.warn(message)
         machine_id_final_int = machine_id_int
 
-    else:
+    elif machine_id_int == 0 and machine_id_from_path_int != 0:
         machine_id_final_int = machine_id_from_path_int
+
+    elif machine_id_int != 0 and machine_id_from_path_int == 0:
+        machine_id_final_int = machine_id_int
+    else:
+        message = 'generate_remote_data_path: 无法获得机器号'
+        raise ValueError(message)
 
     try:
         machine_tag_str = id_tag_dict[machine_id_final_int]

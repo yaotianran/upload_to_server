@@ -3,8 +3,21 @@ import os
 import os.path as path
 from time import time
 
-from lib.server import server
-import lib.utils as utils
+sys.path.append('app/lib')
+sys.path.append('python-3.12.7-embed-amd64/Lib/site-packages')
+
+import requests
+import paramiko
+from server import server
+import utils
+
+
+# from lib.server import server
+# import lib.utils as utils
+
+
+# import server
+# import utils
 
 
 def get_arguments() -> dict:
@@ -56,7 +69,7 @@ def get_arguments() -> dict:
     # 机器号
     while True:
         if 'machine_id' in arguments_dict.keys():
-            temp = input(f"<直接按回车使用{arguments_dict['machine_id']} 或手动输入机器号> ")
+            temp = input(f"<直接按回车使用{arguments_dict['machine_id']} 或手动输入机器号（测试请输入99999）> ")
             if temp == '':
                 temp = arguments_dict['machine_id']
         else:

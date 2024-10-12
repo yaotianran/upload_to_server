@@ -103,7 +103,12 @@ class server:
         try:
             _ = self.sftp_client.normalize(remote_folder_str)
         except FileNotFoundError:
-            _ = self.sftp_client.mkdir(remote_folder_str)
+            try:
+                _ = self.sftp_client.mkdir(remote_folder_str)
+            except FileNotFoundError:
+                message = f'server::create_remote_folder，无法创建远程目录{remote_folder_str}，联系管理员'
+                sys.exit(message)
+
         return remote_folder_str
 
     def upload_a_file(self, local_file, remote_file) -> tuple[str, str]:
