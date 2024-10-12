@@ -1,3 +1,4 @@
+# test
 import sys
 import os
 import os.path as path
@@ -95,8 +96,8 @@ def main(argvList = sys.argv, argv_int = len(sys.argv)):
 
     if str(time())[-1] == '1':
         try:
-            # _ = utils.self_upgrade()
-            # sys.exit(1)
+            _ = utils.self_upgrade()
+            sys.exit(1)
             pass
         except:
             pass
@@ -124,7 +125,8 @@ def main(argvList = sys.argv, argv_int = len(sys.argv)):
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    _ = utils.self_upgrade()
 
 
 
