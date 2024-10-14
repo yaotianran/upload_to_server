@@ -55,14 +55,15 @@ class server:
         '''
         self.transfered_bytes_int += bytes_transferred
 
-        total_transfered_count_str = utils.count_to_unit(self.transfered_count_int)
-        total_transfered_files_bytes_str = utils.count_to_unit(self.transfered_bytes_int)
+        # total_transfered_count_str = utils.count_to_unit(self.transfered_count_int)
+        # total_transfered_files_bytes_str = utils.count_to_unit(self.transfered_bytes_int)
 
-        current_transferred_bytes_str = utils.count_to_unit(bytes_transferred)
-        current_file_bytes_str = utils.count_to_unit(bytes_total)
-        current_percent_str = str(round(bytes_transferred / bytes_total * 100)) + '%'
+        # current_transferred_bytes_str = utils.count_to_unit(bytes_transferred)
+        # current_file_bytes_str = utils.count_to_unit(bytes_total)
+        # current_percent_str = str(round(bytes_transferred / bytes_total * 100)) + '%'
 
-        print(f'{transferred_str}/{total_str} {percent_str}             ', end = '\r')
+        percent_str = str(round(bytes_transferred / bytes_total * 100)) + '%'
+        print(f'{bytes_transferred}/{bytes_total} {percent_str}             ', end = '\r')
 
         return None
 
@@ -181,6 +182,9 @@ class server:
                     try:
                         self.total_bytes_int += os.stat(file_str).st_size
                         self.total_count_int += 1
+                    except Exception as ex:
+                        print(ex)
+                        continue
 
         parent_folder_of_local = path.dirname(local_folder)  # if local_folder = "D:\Program Files\Common Files", parent_folder_of_local would be "D:\Program Files"
         for root_dir_str, child_folder_lst, files_lst in os.walk(local_folder):
