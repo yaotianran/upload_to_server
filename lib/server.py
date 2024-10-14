@@ -35,6 +35,15 @@ class server:
     port: int = 22
     sftp_client: paramiko.SFTPClient = None
 
+    total_count_int: int = 0
+    total_bytes_int: int = 0
+
+    transfered_count_int: int = 0
+    transfered_bytes_int: int = 0
+
+    skipped_count_int: int = 0
+    skipped_bytes_int: int = 0
+
     def __init__(self, ip: str, port: int = 22):
         self.ip = ip
         self.port = port
@@ -44,9 +53,14 @@ class server:
         '''
         用于SFTPClient.put方法的call_back属性
         '''
-        transferred_str = utils.count_to_unit(bytes_transferred)
-        total_str = utils.count_to_unit(bytes_total)
-        percent_str = str(round(bytes_transferred / bytes_total * 100)) + '%'
+        self.transfered_bytes_int += bytes_transferred
+
+        total_transfered_count_str = utils.count_to_unit(self.transfered_count_int)
+        total_transfered_files_bytes_str = utils.count_to_unit(self.transfered_bytes_int)
+
+        current_transferred_bytes_str = utils.count_to_unit(bytes_transferred)
+        current_file_bytes_str = utils.count_to_unit(bytes_total)
+        current_percent_str = str(round(bytes_transferred / bytes_total * 100)) + '%'
 
         print(f'{transferred_str}/{total_str} {percent_str}             ', end = '\r')
 
@@ -111,9 +125,9 @@ class server:
 
         return remote_folder_str
 
-    def upload_a_file(self, local_file, remote_file) -> tuple[str, str]:
+    def upload_a_file(self, local_file, remote_file) -> int:
         '''
-        上传一个文件
+        上传一个文件, 返回上传的字节数
         '''
 
         # local_file = r'D:\Program Files\Common Files\System\Ole DB\msdaosp.dll'
@@ -144,11 +158,15 @@ class server:
             remote_file_stat = self.sftp_client.stat(remote_file)
             if remote_file_stat.st_size != local_file_stat.st_size or local_file_stat.st_mtime - remote_file_stat.st_mtime > 0:  # 文件大小不一致或者local文件较新
                 raise FileNotFoundError
+            else:    # 跳过文件
+                self.skipped_bytes_int += remote_file_stat.st_size
+                self.skipped_count_int += 1
+                return 0
+        except FileNotFoundError:  # 上传文件
+            remote_file_stat = self.sftp_client.put(local_file, remote_file, callback = self.__print_progress)
+            self.transfered_count_int += 1
 
-        except FileNotFoundError:
-            attr: paramiko.SFTPAttributes = self.sftp_client.put(local_file, remote_file, callback = self.__print_progress)
-
-        return
+        return remote_file_stat.st_size
 
     def upload_a_folder(self, local_folder: str, remote_folder: str, pattern: list[str, ...] = ['.fastq.gz', '.fq.gz', '.fq', '.fastq', '.md5']) -> int:
         '''
@@ -157,6 +175,12 @@ class server:
 
         # local_folder = r'D:\Program Files'
         # local_folder = r'D:\Program Files\Internet Explorer'
+        for root_dir_str, child_folder_lst, files_lst in os.walk(local_folder):
+            for s in pattern:
+                for file_str in glob.glob(f'{root_dir_str}\\*{s}'):
+                    try:
+                        self.total_bytes_int += os.stat(file_str).st_size
+                        self.total_count_int += 1
 
         parent_folder_of_local = path.dirname(local_folder)  # if local_folder = "D:\Program Files\Common Files", parent_folder_of_local would be "D:\Program Files"
         for root_dir_str, child_folder_lst, files_lst in os.walk(local_folder):

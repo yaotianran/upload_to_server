@@ -3,8 +3,8 @@ import os
 import os.path as path
 from time import time
 
-sys.path.append('app/lib')
-sys.path.append('python-3.12.7-embed-amd64/Lib/site-packages')
+sys.path.append('app\\lib')
+sys.path.append('python-3.12.7-embed-amd64\\Lib\\site-packages')
 
 import requests
 import paramiko
@@ -124,6 +124,7 @@ def main(argvList = sys.argv, argv_int = len(sys.argv)):
 
     data_server = server(ip = '192.168.0.185')
     data_server.generate_sftp_client(username = 'dtrans', private_key_file = 'app\\test_id_rsa')
+
     for local_path_str in arguments_dict['local_path']:
         if 'Res' not in os.listdir(local_path_str) and 'Res1' not in os.listdir(local_path_str):
             message = f'{path.basename(local_path_str)}，该上传目录下无Res，确定这是一个项目文件？'
