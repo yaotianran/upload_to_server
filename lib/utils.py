@@ -144,8 +144,9 @@ def self_upgrade(url: str = 'https://github.com/yaotianran/upload_to_server/arch
         return 1
 
     file_replace_lst: list[tuple[str, str], ...] = [('upload_to_server-master\\upload.py', 'app\\upload.py'),
+                                                    ('upload_to_server-master\\upload.bat', 'upload.bat'),
                                                     ('upload_to_server-master\\lib\\server.py', 'app\\lib\\server.py'),
-                                                    ('upload_to_server-master\\lib\\utils.py', 'app\\lib\\utils.py'),
+                                                    ('upload_to_server-master\\lib\\utils.py', 'app\\lib\\utils.py')
                                                     ]
 
     for src, dst in file_replace_lst:
