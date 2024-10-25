@@ -107,11 +107,11 @@ def get_arguments() -> dict:
 def main(argvList = sys.argv, argv_int = len(sys.argv)):
 
     try:
-        if int(str(time())[-2:]) <= 9:
+        if int(str(time())[-1]) == 9:
             _ = utils.self_upgrade()
             sys.exit(1)
     except Exception as ex:
-        print(ex)
+        pass
 
     arguments_dict = get_arguments()
 
@@ -123,6 +123,7 @@ def main(argvList = sys.argv, argv_int = len(sys.argv)):
     print('服务器数据上传路径： ', remote_folder_str)
 
     data_server = server(ip = '192.168.0.185')
+    print('正在连接服务器192.168.0.185 ...')
     data_server.generate_sftp_client(username = 'dtrans', private_key_file = 'app\\test_id_rsa')
 
     for local_path_str in arguments_dict['local_path']:
