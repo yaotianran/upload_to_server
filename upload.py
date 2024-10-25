@@ -35,7 +35,7 @@ def get_arguments() -> dict:
     # 上传的项目目录
     arguments_dict['local_path'] = []
     while True:
-        local_path_str = input('<将所需上传的项目目录拖曳到此处后按回车，直接回车结束输入> ')
+        local_path_str = input('<将所需上传的项目目录（例如：202410181422_C22091401_A_PRM32502260044_SEQ_A_AB_PE150）拖曳到此处后按回车，直接回车结束输入> ')
         if local_path_str != '' and local_path_str not in arguments_dict['local_path']:
             arguments_dict['local_path'].append(local_path_str)
         elif arguments_dict['local_path'] != []:
