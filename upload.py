@@ -1,3 +1,4 @@
+# v0.1a
 import sys
 import os
 import os.path as path
@@ -131,7 +132,7 @@ def main(argvList = sys.argv, argv_int = len(sys.argv)):
             message = f'{path.basename(local_path_str)}，该上传目录下无Res，确定这是一个项目文件？'
             print(message)
         data_server.upload_a_folder(local_path_str, remote_folder_str, pattern = arguments_dict['pattern'])
-        _ = utils.send_message(machine_type, machine_id_int, path.basename(local_path_str))
+        _ = utils.send_message(machine_type, str(machine_id_int), path.basename(local_path_str), remote_folder_str)
     print('\nDone')
 
     return

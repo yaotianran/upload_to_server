@@ -44,12 +44,12 @@ def count_to_unit(count: int, digit = 2) -> str:
     return str(round(num, digit)) + unit
 
 
-def send_message(machine_type: str, machine_id: str, data_dir: str) -> int:
+def send_message(machine_type: str, machine_id: str, data_dir: str, remote_dir: str) -> int:
     """
     若数据已经传输完成,则把相应信息发送到飞书群里面通知大家可以使用该数据
     """
 
-    msg = f"{get_time_now()} 下机数据传输完成，机器类型： {machine_type} 机器号：{machine_id}，数据路径：{data_dir}"
+    msg = f"{get_time_now()} 下机数据传输完成，机器类型： {machine_type} 机器号：{machine_id}，测序仪路径：{data_dir}，服务器路径：{remote_dir}"
     headers = {'Content-Type': 'application/json;charset=utf-8'}
     webhook = 'https://open.feishu.cn/open-apis/bot/v2/hook/3feb487a-e2c3-4ea1-b96f-26e1278489d4'
 
@@ -167,7 +167,7 @@ def self_upgrade(url: str = 'https://github.com/yaotianran/upload_to_server/arch
 
 if __name__ == '__main__':
 
-    # r = send_message('测试3', '测试3')
+    # r = send_message('测试测序仪', 'machine_id'， '')
 
     # local_path = r'E:\NGS\NGS\OutFile\202408291906_Pro004_B_PPH32501170007_PCR3_1_3_WGS_PE150_1000M_23PM'
     # id_to_tag_file = r'..\Pro_id.txt'
