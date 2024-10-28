@@ -169,7 +169,7 @@ class server:
 
         return remote_file_stat.st_size
 
-    def upload_a_folder(self, local_folder: str, remote_folder: str, pattern: list[str, ...] = ['.fastq.gz', '.fq.gz', '.fq', '.fastq', '.md5']) -> int:
+    def upload_a_folder(self, local_folder: str, remote_folder: str, pattern: list[str, ...] = ['.fastq.gz', '.fq.gz', '.fq', '.fastq', '.md5', 'html']) -> int:
         '''
         将local folder上传到服务器的remote folder下，成为remote folder下的一个子目录 ，保持每个子目录下保持原始目录结构，可选择只上传某些类型的文件
         '''
