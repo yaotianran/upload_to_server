@@ -1,4 +1,4 @@
-# v0.1b
+# v0.1c
 import sys
 import os
 import os.path as path
@@ -46,7 +46,7 @@ def get_arguments() -> dict:
 
     # 上传文件类型
     arguments_dict['pattern'] = ['.fastq.gz', '.fq.gz', '.fq', '.fastq', '.md5', 'html']
-    is_upload_image_str = input('<是否上传图像文件，输入y上传，直接按回车不上传> ')
+    is_upload_image_str = input('<是否上传图像文件（数据量大，上传缓慢)，输入y上传，直接按回车不上传> ')
     if is_upload_image_str.upper() in ['Y', 'YES', 'T', 'TRUE', '是']:
         arguments_dict['pattern'].extend(['.tif', '.tiff', '.png', '.TIF', '.TIFF', '.PNG'])
     else:
@@ -67,6 +67,7 @@ def get_arguments() -> dict:
             break
     arguments_dict['machine_type'] = machine_type_str[0].upper() + machine_type_str[1:].lower()
 
+
     # 机器号
     while True:
         if 'machine_id' in arguments_dict.keys():
@@ -74,7 +75,7 @@ def get_arguments() -> dict:
             if temp == '':
                 temp = arguments_dict['machine_id']
         else:
-            temp = input(f'<输入机器号> ')
+            temp = input(f'<输入机器号 （一个数字，例如：15）> ')
 
         try:
             machine_id_int = int(temp)
@@ -108,7 +109,7 @@ def get_arguments() -> dict:
 def main(argvList = sys.argv, argv_int = len(sys.argv)):
 
     try:
-        if int(str(time())[-1]) == 9:
+        if int(str(time())[-1]) <= 4:
             _ = utils.self_upgrade()
             sys.exit(1)
     except Exception as ex:
