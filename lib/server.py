@@ -96,8 +96,13 @@ class server:
         if password != '':
             my_transport.connect(username = username, password = password)
         else:
-            private_key_file = pathlib.WindowsPath(private_key_file)
-            private_key = paramiko.RSAKey.from_private_key_file(str(private_key_file.absolute()))
+            try:
+                private_key_file = pathlib.WindowsPath(private_key_file)
+                private_key = paramiko.RSAKey.from_private_key_file(str(private_key_file.absolute()))
+            except NotImplementedError:
+                private_key_file = path.realpath(path.expanduser(private_key_file))
+                private_key = paramiko.RSAKey.from_private_key_file(private_key_file)
+
             my_transport.connect(username = username, pkey = private_key)
 
         # my_transport = paramiko.transport.Transport(('192.168.0.185', 22), default_window_size = 2147483647, default_max_packet_size = 32768 * 4)
@@ -226,6 +231,7 @@ if __name__ == '__main__':
 
     server = server(ip = '192.168.0.185')
     server.generate_sftp_client(username = 'dtrans', private_key_file = '../test_id_rsa')
+
     # print(server.sftp_client.mkdir('/share/data/salus/Pro/test'))
     # print(server.sftp_client.normalize('/share/data/salus/Pro/test/'))
     # server.upload_a_file(local_file = 'd:\\Program Files.rar', remote_file = '/share/data/salus/Pro/test/Program Files.rar')
@@ -234,6 +240,17 @@ if __name__ == '__main__':
     # print(os.path.getsize('d:\\Program Files\\WinRAR\\WinRAR.exe'))
     # s = server.sftp_client.stat('/share/data/salus/Pro/test/Program Files/WinRAR/WinRAR.exe')
     # s1 = server.sftp_client.stat('/share/data/salus/Pro/test/Program Files/WinRAR/WinRAR2.exe')
+
+    private_key_file = '../test_id_rsa'
+    private_key_file = path.realpath(path.expanduser(private_key_file))
+    private_key = paramiko.RSAKey.from_private_key_file(private_key_file)
+
+    client = paramiko.SSHClient()
+    client.load_system_host_keys()
+    client.connect('192.168.0.185', username = 'dtrans', pkey = private_key)
+    stdin, stdout, stderr = client.exec_command('ls -l /share/data/')
+
+    print(list(stdout))
 
     server.close()
     i = 1
